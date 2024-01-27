@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   hass-divoom-display:
@@ -6,5 +6,7 @@ services:
     container_name: hass-divoom-display
     restart: unless-stopped
     network_mode: bridge
+    stdin_open: true
+    tty: true
     ports:
       - 8080:8080

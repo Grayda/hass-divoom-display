@@ -86,18 +86,10 @@ def dynamic_route(custom_path):
     return jsonify(result)
 
 if __name__ == '__main__':
-    import argparse
-
-    parser = argparse.ArgumentParser(description='Start a web server.')
-    
-    # parser.add_argument('--port', type=int, default=DEFAULT_PORT, help='Port for the web server')
-    # parser.add_argument('--url', type=str, required=True, help='The URL to your Home Assistant instance')
-    # parser.add_argument('--token', type=str, required=True, help='The Long Lived Access Token for this')
-
     # args = parser.parse_args()
-    print(os.environ.get("URL"))
+    print(f"Port: {os.environ.get('URL')}")
     HASS = Client(os.environ.get("URL"), os.environ.get("TOKEN"))
 
-    app.run(port=os.environ.get("PORT") or 8080)
+    app.run(port=os.environ.get("PORT", 8080))
 
     
