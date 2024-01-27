@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  hass-divoom-display:
+    image: hass-divoom-display:latest
+    container_name: hass-divoom-display
+    restart: unless-stopped
+    network_mode: bridge
+    ports:
+      - 8080:8080

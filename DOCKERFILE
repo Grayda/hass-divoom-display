@@ -1,0 +1,28 @@
+# Use an official Python runtime as a parent image
+FROM python:3.11
+
+# Set the working directory to /app
+WORKDIR /app
+
+ARG port=8080
+EXPOSE ${port}
+
+# Clone the GitHub repo
+RUN apt-get update && \
+    apt-get install -y git cron && \
+    git clone https://github.com/grayda/hass-divoom-display.git .
+
+# Install any dependencies the python script requires
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Set up a daily cron job for updating the script and restarting the python script
+RUN echo "0 0 * * * root cd /app && git pull && pkill -f 'python main.py' && python main.py" > /etc/cron.d/script-update
+
+# Give execution permission to the cron job
+RUN chmod 0644 /etc/cron.d/script-update
+
+# Apply cron job
+RUN crontab /etc/cron.d/script-update
+
+# Run the python script
+CMD ["python", "main.py"]
