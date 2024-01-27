@@ -87,7 +87,9 @@ def dynamic_route(custom_path):
 
 if __name__ == '__main__':
     # args = parser.parse_args()
-    print(f"Port: {os.getenv('URL')}")
+    print(f"Port: {os.getenv('PORT')}")
+    print(f"URL: {os.getenv('URL')}")
+    print(f"Token: ...{os.getenv('TOKEN')[-6:]}")
     HASS = Client(os.getenv("URL"), os.getenv("TOKEN"))
 
     app.run(port=os.getenv("PORT", 8080), host="0.0.0.0")
