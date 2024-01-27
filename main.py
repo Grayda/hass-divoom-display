@@ -90,6 +90,7 @@ if __name__ == '__main__':
     print(f"Port: {os.getenv('URL')}")
     HASS = Client(os.getenv("URL"), os.getenv("TOKEN"))
 
-    app.run(port=os.getenv("PORT", 8080))
+    app.run(port=os.getenv("PORT", 8080), host="0.0.0.0")
+    
 
     
