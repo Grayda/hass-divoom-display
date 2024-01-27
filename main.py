@@ -31,9 +31,9 @@ def create_response(data, return_code=0, return_message=""):
     }
 
 def getURL(endpoint):
-    url = f"{os.environ.get('url')}{endpoint}"
+    url = f"{os.environ.get('URL')}{endpoint}"
     headers = {
-        "Authorization": f"Bearer {os.environ.get('token')}",
+        "Authorization": f"Bearer {os.environ.get('TOKEN')}",
         "content-type": "application/json",
     }
     
@@ -95,9 +95,9 @@ if __name__ == '__main__':
     # parser.add_argument('--token', type=str, required=True, help='The Long Lived Access Token for this')
 
     # args = parser.parse_args()
-    print(os.environ.get("url"))
-    HASS = Client(os.environ.get("url"), os.environ.get("token"))
+    print(os.environ.get("URL"))
+    HASS = Client(os.environ.get("URL"), os.environ.get("TOKEN"))
 
-    app.run(port=os.environ.get("port") or 8080)
+    app.run(port=os.environ.get("PORT") or 8080)
 
     
