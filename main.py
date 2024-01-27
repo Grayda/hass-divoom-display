@@ -31,9 +31,9 @@ def create_response(data, return_code=0, return_message=""):
     }
 
 def getURL(endpoint):
-    url = f"{os.environ.get('URL')}{endpoint}"
+    url = f"{os.getenv('URL')}{endpoint}"
     headers = {
-        "Authorization": f"Bearer {os.environ.get('TOKEN')}",
+        "Authorization": f"Bearer {os.getenv('TOKEN')}",
         "content-type": "application/json",
     }
     
@@ -87,9 +87,9 @@ def dynamic_route(custom_path):
 
 if __name__ == '__main__':
     # args = parser.parse_args()
-    print(f"Port: {os.environ.get('URL')}")
-    HASS = Client(os.environ.get("URL"), os.environ.get("TOKEN"))
+    print(f"Port: {os.getenv('URL')}")
+    HASS = Client(os.getenv("URL"), os.getenv("TOKEN"))
 
-    app.run(port=os.environ.get("PORT", 8080))
+    app.run(port=os.getenv("PORT", 8080))
 
     
