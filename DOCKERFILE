@@ -4,7 +4,7 @@ FROM python:3.11
 # Set the working directory to /app
 WORKDIR /app
 
-ARG port=8080
+ENV PORT=8080
 EXPOSE ${port}
 
 # Clone the GitHub repo
