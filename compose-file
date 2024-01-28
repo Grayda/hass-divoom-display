@@ -6,6 +6,10 @@ services:
     container_name: hass-divoom-display
     restart: unless-stopped
     network_mode: bridge
+    environment:
+      - URL
+      - TOKEN
+      - PORT
     stdin_open: true
     tty: true
     ports:
