@@ -91,7 +91,8 @@ if __name__ == '__main__':
     print(f"URL: {os.getenv('URL')}")
     print(f"Token: ...{os.getenv('TOKEN')[-6:]}")
     HASS = Client(os.getenv("URL"), os.getenv("TOKEN"))
-
+    app.json.ensure_ascii = False
+    app.json.mimetype = "application/json; charset=utf-8"
     app.run(port=os.getenv("PORT", 8080), host="0.0.0.0")
     
 
