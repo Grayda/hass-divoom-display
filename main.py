@@ -24,9 +24,9 @@ class dotdict(dict):
     __setattr__ = dict.__setitem__     
     __delattr__ = dict.__delitem__
 
-def create_response(data, return_code=0, return_message=""):
+def create_response(data: str, return_code=0, return_message=""):
     return {
-        "DispData": data,
+        "DispData": data.upper(),
         "ReturnCode": return_code,
         "ReturnMessage": return_message
     }
