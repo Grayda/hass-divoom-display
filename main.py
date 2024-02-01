@@ -76,9 +76,6 @@ def update():
         # Run 'git pull' command
         subprocess.run(['git', 'pull'], check=True)
 
-        # Run 'reboot' command
-        subprocess.run(['reboot'], check=True)
-
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
         # Handle the error as needed
