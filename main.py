@@ -1,7 +1,8 @@
-from flask import Flask, jsonify
-from flask import request
+from flask import Flask, jsonify, request
+from datetime import datetime
 from homeassistant_api import Client
 from requests import get
+import subprocess
 import json
 import os
 
@@ -42,25 +43,77 @@ def getURL(endpoint):
 
 def getCalendar(calendar: str):
     results = dotdict(json.loads(getURL(f"/states/{calendar}")))
-    return results.attributes.message
+    
+    event_name = results.attributes.message
+    event_time = results.attributes.start_time
+    
+    dt = datetime.strptime(event_time, "%Y-%m-%d %H:%M:%S")
+    formatted_dt = dt.strftime("%A %d %b %Y, %I:%M%p")
+    
+    return f"{event_name} ({formatted_dt})"
+
+def getSuffix(n):
+    n = int(n)
+    if 11 <= (n % 100) <= 13:
+        suffix = 'th'
+    else:
+        suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
+    return suffix
+
+def getDate():
+    today = datetime.now().date()
+
+    # Extract day, month, and year
+    day = today.day
+    
+    dateString = today.strftime(f"%A {day}{getSuffix(day)} %B")  # Full month name
+    
+    return dateString
+
+def update():
+    print("Updating")
+    try:
+        # Run 'git pull' command
+        subprocess.run(['git', 'pull'], check=True)
+
+        # Run 'reboot' command
+        subprocess.run(['reboot'], check=True)
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+        # Handle the error as needed
 
 def process_results(path):
     global HASS
 
     try:
         data = {
+            "/update": {
+                "function": update,
+                "parameters": []
+            },
             "/temperature": {
                 "entity_id": "weather.home",
                 "attribute": "temperature",
-                "template": "{value}°C"
+                "template": "{value}°C Outside"
+            },
+            "/temperature_inside": {
+                "entity_id": "sensor.bedroom_climate_temperature",
+                "template": "{value}°C Inside"
             },
             "/calendar": {
-                "function": getCalendar("calendar.bills_and_payments"),
+                "function": getCalendar,
+                "parameters": ["calendar.bills_and_payments"],
                 "template": "{value}"
             },
             "/bin": {
                 "entity_id": "sensor.bin_sensor",
                 "template": "{value}"
+            },
+            "/date": {
+              "function": getDate,
+              "parameters": [],
+              "template": "{value}"  
             },
             "/message": {
                 "entity_id": "input_text.divoom_message",
@@ -69,7 +122,12 @@ def process_results(path):
         }
         
         if "function" in data[path]:
-            return create_response((data[path]["template"] or "{value}").format(value=str(data[path]["function"])))
+            fn = data[path]["function"]
+            params = data[path]["parameters"] or []
+            
+            results = fn(*params)
+            
+            return create_response((data[path]["template"] or "{value}").format(value=results))
         elif "attribute" in data[path]:
             state = HASS.get_entity(entity_id=data[path]["entity_id"])
             return create_response((data[path]["template"] or "{value}").format(value=str(state.state.attributes[data[path]['attribute']])))
@@ -79,6 +137,7 @@ def process_results(path):
 
     except Exception as ex:
         return create_response(data=str(ex))
+
 
 @app.route('/<path:custom_path>')
 def dynamic_route(custom_path):
