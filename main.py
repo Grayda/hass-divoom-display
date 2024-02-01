@@ -48,7 +48,7 @@ def getCalendar(calendar: str):
     event_time = results.attributes.start_time
     
     dt = datetime.strptime(event_time, "%Y-%m-%d %H:%M:%S")
-    formatted_dt = dt.strftime("%A %d %b %Y, %I:%M%p")
+    formatted_dt = dt.strftime(f"%a {dt.day}{getSuffix(dt.day)} %b, %I:%M %p")
     
     return f"{event_name} ({formatted_dt})"
 
@@ -66,7 +66,7 @@ def getDate():
     # Extract day, month, and year
     day = today.day
     
-    dateString = today.strftime(f"%A {day}{getSuffix(day)} %B")  # Full month name
+    dateString = today.strftime(f"%a {day}{getSuffix(day)} %b")  # Full month name
     
     return dateString
 
@@ -92,19 +92,15 @@ def process_results(path):
             "/temperature": {
                 "entity_id": "weather.home",
                 "attribute": "temperature",
-                "template": "{value}°C Outside"
+                "template": "{value}°C OUT"
             },
             "/temperature_inside": {
                 "entity_id": "sensor.bedroom_climate_temperature",
-                "template": "{value}°C Inside"
+                "template": "{value}°C IN"
             },
             "/calendar": {
                 "function": getCalendar,
                 "parameters": ["calendar.bills_and_payments"],
-                "template": "{value}"
-            },
-            "/bin": {
-                "entity_id": "sensor.bin_sensor",
                 "template": "{value}"
             },
             "/date": {
