@@ -100,7 +100,7 @@ def process_results(path):
             },
             "/calendar": {
                 "function": getCalendar,
-                "parameters": ["calendar.bills_and_payments"],
+                "parameters": ["calendar.home_calendar"],
                 "template": "{value}"
             },
             "/date": {
